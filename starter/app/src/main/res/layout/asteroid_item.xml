@@ -27,7 +27,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textColor="@color/default_text_color"
+            style="@style/style_standard_text_bold"
             android:text="@{asteroid.codename}"
             tools:text="Asteroid Name" />
 
@@ -38,7 +38,7 @@
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="@+id/textview_asteroid_name"
             app:layout_constraintTop_toBottomOf="@+id/textview_asteroid_name"
-            android:textColor="@color/default_text_color"
+            style="@style/style_standard_text_normal"
             android:text="@{asteroid.closeApproachDate}"
             tools:text="2022-06-22" />
 

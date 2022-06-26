@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="style_standard_text_bold">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/default_text_color</item>
+    </style>
+    <style name="style_standard_text_normal">
+        <item name="android:textColor">@color/default_text_color</item>
+    </style>
+
 </resources>
