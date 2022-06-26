@@ -14,18 +14,21 @@ import com.udacity.asteroidradar.domain.Asteroid
 
 class MainFragment : Fragment() {
 
-    private var mainAsteroidsAdapter:MainAsteroidsAdapter? = null
+    private var mainAsteroidsAdapter: MainAsteroidsAdapter? = null
+    private lateinit var binding: FragmentMainBinding
 
     private val viewModel: MainViewModel by lazy {
         val activity = requireNotNull(this.activity)
-        ViewModelProvider(this, MainViewModel.Factory(activity.application)).get(MainViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MainViewModel.Factory(activity.application)
+        ).get(MainViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val binding = FragmentMainBinding.inflate(inflater)
-        binding.lifecycleOwner = this
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
+        binding = FragmentMainBinding.inflate(inflater)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
         mainAsteroidsAdapter = MainAsteroidsAdapter(AsteroidClickListener {
@@ -33,14 +36,6 @@ class MainFragment : Fragment() {
         })
 
         binding.asteroidRecycler.adapter = mainAsteroidsAdapter
-
-        viewModel.pictureOfDayUrl.observe(viewLifecycleOwner, Observer {
-            if (it.isNullOrEmpty()){
-                viewModel.loadImageOfTheDayUrl()
-            } else {
-                Picasso.get().load(it).into(binding.activityMainImageOfTheDay)
-            }
-        })
 
         setHasOptionsMenu(true)
 
@@ -52,13 +47,20 @@ class MainFragment : Fragment() {
 
         viewModel.asteroidsList.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it.isNullOrEmpty()){
+                if (it.isNullOrEmpty()) {
                     viewModel.performNetworkRequest()
                 } else {
                     mainAsteroidsAdapter?.submitList(it)
                 }
             }
         })
+
+        viewModel.pictureOfDay.observe(viewLifecycleOwner, Observer {
+            Picasso.get().load(it.url).into(binding.activityMainImageOfTheDay)
+            binding.activityMainImageOfTheDay.contentDescription = it.title
+        })
+
+        viewModel.loadImageOfTheDay()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

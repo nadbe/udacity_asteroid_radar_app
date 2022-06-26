@@ -1,6 +1,8 @@
 package com.udacity.asteroidradar.repository
 
+import android.graphics.Picture
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.PictureOfDay
@@ -33,4 +35,17 @@ class AsteroidsRepository (private val database: AsteroidsDatabase) {
         }
     }
 
+}
+
+class NasaImageRepository {
+
+    var pictureOfDay = MutableLiveData<PictureOfDay>()
+
+    suspend fun loadNasaPictureData(){
+        var picture:PictureOfDay
+        withContext(Dispatchers.IO) {
+            picture = NasaImageApi.retrofitService.getNasaImageOfTheDay(BuildConfig.API_KEY)
+        }
+        pictureOfDay.value = picture
+    }
 }

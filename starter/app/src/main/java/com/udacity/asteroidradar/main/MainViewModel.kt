@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.Constants
@@ -9,6 +10,7 @@ import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.network.NasaImageApi
 import com.udacity.asteroidradar.network.getFormattedDate
 import com.udacity.asteroidradar.repository.AsteroidsRepository
+import com.udacity.asteroidradar.repository.NasaImageRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,16 +19,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidsRepository(database)
+    private val imageRepository = NasaImageRepository()
 
     val asteroidsList = asteroidsRepository.asteroidsList
-
-    private val _pictureOfDayUrl = MutableLiveData<String>()
-    val pictureOfDayUrl: LiveData<String>
-    get() = _pictureOfDayUrl
-
-    init {
-        _pictureOfDayUrl.value = ""
-    }
+    val pictureOfDay = imageRepository.pictureOfDay
 
     fun performNetworkRequest() {
             viewModelScope.launch {
@@ -41,20 +37,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
     }
 
-    fun loadImageOfTheDayUrl(){
+    fun loadImageOfTheDay(){
         viewModelScope.launch {
             try {
-                var pictureOfDay: PictureOfDay
-                withContext(Dispatchers.IO) {
-                    pictureOfDay = NasaImageApi.retrofitService.getNasaImageOfTheDay(BuildConfig.API_KEY)
-                }
-                _pictureOfDayUrl.value = pictureOfDay.url
+                imageRepository.loadNasaPictureData()
             } catch (e: Exception) {
 
             }
-
         }
-
     }
 
 
