@@ -14,19 +14,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val asteroidsRepository = AsteroidsRepository(database)
 
     init {
-        viewModelScope.launch {
-            try {
-                asteroidsRepository.refreshAsteroids(
-                    getFormattedDate(0),
-                    getFormattedDate(Constants.DEFAULT_END_DATE_DAYS)
-                )
-            } catch (e: Exception) {
-
-            }
-        }
+        //performNetworkRequestIfNeeded()
     }
 
     val asteroidsList = asteroidsRepository.asteroidsList
+
+    fun performNetworkRequest() {
+            viewModelScope.launch {
+                try {
+                    asteroidsRepository.refreshAsteroids(
+                        getFormattedDate(0),
+                        getFormattedDate(Constants.DEFAULT_END_DATE_DAYS)
+                    )
+                } catch (e: Exception) {
+
+                }
+            }
+    }
+
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

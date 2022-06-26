@@ -43,7 +43,11 @@ class MainFragment : Fragment() {
 
         viewModel.asteroidsList.observe(viewLifecycleOwner, Observer {
             it?.let {
-                mainAsteroidsAdapter?.submitList(it)
+                if (it.isNullOrEmpty()){
+                    viewModel.performNetworkRequest()
+                } else {
+                    mainAsteroidsAdapter?.submitList(it)
+                }
             }
         })
     }
