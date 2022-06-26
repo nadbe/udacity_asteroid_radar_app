@@ -5,6 +5,11 @@ import com.udacity.asteroidradar.database.DatabaseAsteroid
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.network.getNextSevenDaysFormattedDates
 
+//Nasa Image of the day
+data class PictureOfDay(@Json(name = "media_type") val mediaType: String, val title: String,
+                        val url: String)
+
+//Asteroids
 data class NearEarthObject(
     @Json(name = "near_earth_objects")
     val nearEarthObject: Map<String, List<AsteroidObject>>
