@@ -11,6 +11,9 @@ interface AsteroidDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllAsteroids(vararg asteroid: DatabaseAsteroid)
+
+    @Query("delete from databaseasteroid where closeApproachDate not in (:dateRange)")
+    fun deleteOutdatedAsteroids(dateRange: List<String>)
 }
 
 @Database(entities = [DatabaseAsteroid::class], version = 1)

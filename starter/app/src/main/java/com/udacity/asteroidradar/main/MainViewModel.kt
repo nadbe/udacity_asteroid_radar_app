@@ -16,7 +16,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         viewModelScope.launch {
             try {
-                asteroidsRepository.refreshAsteroids(getFormattedDate(0), getFormattedDate(Constants.DEFAULT_END_DATE_DAYS))
+                asteroidsRepository.refreshAsteroids(
+                    getFormattedDate(0),
+                    getFormattedDate(Constants.DEFAULT_END_DATE_DAYS)
+                )
             } catch (e: Exception) {
 
             }
