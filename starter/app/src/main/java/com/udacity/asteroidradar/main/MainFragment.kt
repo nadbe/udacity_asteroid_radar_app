@@ -37,7 +37,8 @@ class MainFragment : Fragment() {
 
         binding.asteroidRecycler.adapter = mainAsteroidsAdapter
 
-        setHasOptionsMenu(true)
+        // Removed this options menu because it was not part of the screens in the task description
+        //setHasOptionsMenu(true)
 
         return binding.root
     }
