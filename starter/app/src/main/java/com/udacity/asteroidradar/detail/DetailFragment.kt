@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.detail
 
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,12 @@ class DetailFragment : Fragment() {
         val asteroid = DetailFragmentArgs.fromBundle(arguments!!).selectedAsteroid
 
         binding.asteroid = asteroid
+
+        if (asteroid.isPotentiallyHazardous){
+            binding.activityMainImageOfTheDay.contentDescription = resources.getString(R.string.potentially_hazardous_asteroid_image)
+        } else{
+            binding.activityMainImageOfTheDay.contentDescription = resources.getString(R.string.not_hazardous_asteroid_image)
+        }
 
         binding.helpButton.setOnClickListener {
             displayAstronomicalUnitExplanationDialog()
