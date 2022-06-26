@@ -1,23 +1,23 @@
 package com.udacity.asteroidradar.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.udacity.asteroidradar.NearEarthObject
-import com.udacity.asteroidradar.domain.Asteroid
-import com.udacity.asteroidradar.network.AsteroidApi
+import android.app.Application
+import androidx.lifecycle.*
+import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.database.getDatabase
+import com.udacity.asteroidradar.network.getFormattedDate
 import com.udacity.asteroidradar.repository.AsteroidsRepository
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
-    private val asteroidsRepository = AsteroidsRepository()
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val database = getDatabase(application)
+    private val asteroidsRepository = AsteroidsRepository(database)
 
     init {
         viewModelScope.launch {
             try {
-                asteroidsRepository.refreshAsteroids("2022-06-25","2022-07-01")
-            } catch (e:Exception){
+                asteroidsRepository.refreshAsteroids(getFormattedDate(0), getFormattedDate(Constants.DEFAULT_END_DATE_DAYS))
+            } catch (e: Exception) {
 
             }
         }
@@ -25,4 +25,13 @@ class MainViewModel : ViewModel() {
 
     val asteroidsList = asteroidsRepository.asteroidsList
 
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel(app) as T
+            }
+            throw IllegalArgumentException("Unable to construct MainViewModel")
+        }
+    }
 }

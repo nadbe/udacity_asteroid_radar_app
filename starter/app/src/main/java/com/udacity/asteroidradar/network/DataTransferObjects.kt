@@ -1,7 +1,7 @@
 package com.udacity.asteroidradar
 
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.udacity.asteroidradar.database.DatabaseAsteroid
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.network.getNextSevenDaysFormattedDates
 
@@ -57,16 +57,17 @@ data class MissDistance(
 )
 
 
+
 fun NearEarthObject.asDomainModel(): List<Asteroid> {
 
-    var list: MutableList<Asteroid> = mutableListOf()
-
+    var domainModelList: MutableList<Asteroid> = mutableListOf()
     val nextSevenDaysFormattedDates = getNextSevenDaysFormattedDates()
+
     for (formattedDate in nextSevenDaysFormattedDates) {
 
         var asteroidsDayList: List<AsteroidObject> = nearEarthObject.get(formattedDate) ?: listOf()
 
-        list.addAll(
+        domainModelList.addAll(
             asteroidsDayList.map {
                 Asteroid(
                 id = it.id,
@@ -79,5 +80,30 @@ fun NearEarthObject.asDomainModel(): List<Asteroid> {
                 isPotentiallyHazardous = it.isPotentiallyHazardous)
         })
     }
-    return list
+    return domainModelList
+}
+
+fun NearEarthObject.asDatabaseModel(): Array<DatabaseAsteroid> {
+
+    var dataBaseList: MutableList<DatabaseAsteroid> = mutableListOf()
+    val nextSevenDaysFormattedDates = getNextSevenDaysFormattedDates()
+
+    for (formattedDate in nextSevenDaysFormattedDates) {
+
+        var asteroidsDayList: List<AsteroidObject> = nearEarthObject.get(formattedDate) ?: listOf()
+
+        dataBaseList.addAll(
+            asteroidsDayList.map {
+                DatabaseAsteroid(
+                    id = it.id,
+                    codename = it.codename,
+                    closeApproachDate = it.approachData[0].closeApproachDate,
+                    absoluteMagnitude = it.absoluteMagnitude,
+                    estimatedDiameter = it.estimatedDiameter.estimatedDiameterKilometers.estimatedDiameterKilometersMax,
+                    relativeVelocity = it.approachData[0].relativeVelocity.kilometersPerSecond.toDouble(),
+                    distanceFromEarth = it.approachData[0].missDistanceFromEarth.astronomical.toDouble(),
+                    isPotentiallyHazardous = it.isPotentiallyHazardous)
+            })
+    }
+    return dataBaseList.toTypedArray()
 }
